@@ -4,6 +4,7 @@ import { useTasks } from "../context/TaskContext";
 function Tasks() {
   const {
     tasks,
+    taskLoading,
     addTask,
     updateTask,
     markCompleted,
@@ -21,7 +22,7 @@ function Tasks() {
   const [searchText, setSearchText] = useState("");
   const [filterStatus, setFilterStatus] = useState("All");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (title === "" || subject === "" || deadline === "") {
@@ -29,12 +30,22 @@ function Tasks() {
       return;
     }
 
+    let result;
+
     if (isEditing) {
-      updateTask(editTaskId, title, subject, deadline);
-      setIsEditing(false);
-      setEditTaskId(null);
+      result = await updateTask(editTaskId, title, subject, deadline);
+
+      if (result.success) {
+        setIsEditing(false);
+        setEditTaskId(null);
+      }
     } else {
-      addTask(title, subject, deadline);
+      result = await addTask(title, subject, deadline);
+    }
+
+    if (!result.success) {
+      alert(result.message);
+      return;
     }
 
     setTitle("");
@@ -44,7 +55,7 @@ function Tasks() {
 
   const startEdit = (task) => {
     setIsEditing(true);
-    setEditTaskId(task.id);
+    setEditTaskId(task._id);
 
     setTitle(task.title);
     setSubject(task.subject);
@@ -58,6 +69,57 @@ function Tasks() {
     setTitle("");
     setSubject("");
     setDeadline("");
+  };
+
+  const getDeadlineAlert = (task) => {
+    if (task.status === "Completed") {
+      return {
+        text: "Completed",
+        className: "alert-completed",
+      };
+    }
+
+    const today = new Date();
+    const deadlineDate = new Date(task.deadline);
+
+    today.setHours(0, 0, 0, 0);
+    deadlineDate.setHours(0, 0, 0, 0);
+
+    const difference = deadlineDate - today;
+    const daysLeft = difference / (1000 * 60 * 60 * 24);
+
+    if (daysLeft < 0) {
+      return {
+        text: "Overdue",
+        className: "alert-overdue",
+      };
+    }
+
+    if (daysLeft === 0) {
+      return {
+        text: "Due Today",
+        className: "alert-today",
+      };
+    }
+
+    if (daysLeft === 1) {
+      return {
+        text: "Due Tomorrow",
+        className: "alert-tomorrow",
+      };
+    }
+
+    if (daysLeft <= 3) {
+      return {
+        text: "Due Soon",
+        className: "alert-soon",
+      };
+    }
+
+    return {
+      text: "Upcoming",
+      className: "alert-upcoming",
+    };
   };
 
   const filteredTasks = tasks.filter((task) => {
@@ -78,7 +140,7 @@ function Tasks() {
     <section className="tasks-page">
       <div className="page-title">
         <h2>My Tasks</h2>
-        <p>Add, edit, search, filter, and track your assignments easily.</p>
+        <p>Add, edit, search, filter, and track your assignment deadlines.</p>
       </div>
 
       <div className="task-layout">
@@ -167,64 +229,78 @@ function Tasks() {
             </select>
           </div>
 
-          {filteredTasks.length === 0 ? (
+          {taskLoading ? (
+            <p className="empty-message">Loading tasks...</p>
+          ) : filteredTasks.length === 0 ? (
             <p className="empty-message">No matching tasks found.</p>
           ) : (
-            filteredTasks.map((task) => (
-              <div className="new-task-card" key={task.id}>
-                <div className="task-info">
-                  <h6>{task.title}</h6>
-                  <p>
-                    <strong>Subject:</strong> {task.subject}
-                  </p>
-                  <p>
-                    <strong>Deadline:</strong> {task.deadline}
-                  </p>
-                </div>
+            filteredTasks.map((task) => {
+              const deadlineAlert = getDeadlineAlert(task);
 
-                <div className="task-actions">
-                  <span
-                    className={
-                      task.status === "Completed"
-                        ? "status completed"
-                        : "status pending"
-                    }
-                  >
-                    {task.status}
-                  </span>
+              return (
+                <div className="new-task-card" key={task._id}>
+                  <div className="task-info">
+                    <h6>{task.title}</h6>
 
-                  <button
-                    className="edit-btn"
-                    onClick={() => startEdit(task)}
-                  >
-                    Edit
-                  </button>
+                    <p>
+                      <strong>Subject:</strong> {task.subject}
+                    </p>
 
-                  {task.status === "Pending" ? (
-                    <button
-                      className="complete-btn"
-                      onClick={() => markCompleted(task.id)}
+                    <p>
+                      <strong>Deadline:</strong> {task.deadline}
+                    </p>
+
+                    <span
+                      className={`deadline-alert ${deadlineAlert.className}`}
                     >
-                      Complete
-                    </button>
-                  ) : (
-                    <button
-                      className="pending-btn"
-                      onClick={() => markPending(task.id)}
-                    >
-                      Pending
-                    </button>
-                  )}
+                      {deadlineAlert.text}
+                    </span>
+                  </div>
 
-                  <button
-                    className="delete-btn"
-                    onClick={() => deleteTask(task.id)}
-                  >
-                    Delete
-                  </button>
+                  <div className="task-actions">
+                    <span
+                      className={
+                        task.status === "Completed"
+                          ? "status completed"
+                          : "status pending"
+                      }
+                    >
+                      {task.status}
+                    </span>
+
+                    <button
+                      className="edit-btn"
+                      onClick={() => startEdit(task)}
+                    >
+                      Edit
+                    </button>
+
+                    {task.status === "Pending" ? (
+                      <button
+                        className="complete-btn"
+                        onClick={() => markCompleted(task._id)}
+                      >
+                        Complete
+                      </button>
+                    ) : (
+                      <button
+                        className="pending-btn"
+                        onClick={() => markPending(task._id)}
+                      >
+                        Pending
+                      </button>
+                    )}
+
+                    <button
+                      className="delete-btn"
+                      onClick={() => deleteTask(task._id)}
+                    >
+                      Delete
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
       </div>

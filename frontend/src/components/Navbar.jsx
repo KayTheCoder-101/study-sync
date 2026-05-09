@@ -1,4 +1,23 @@
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+
 function Navbar() {
+  const { currentUser, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    const confirmLogout = window.confirm("Are you sure you want to logout?");
+
+    if (confirmLogout) {
+      logout();
+      navigate("/login");
+    }
+  };
+
+  const handleSearchFocus = () => {
+    navigate("/tasks");
+  };
+
   return (
     <header className="top-navbar">
       <div>
@@ -9,7 +28,12 @@ function Navbar() {
       <div className="navbar-right">
         <div className="search-box">
           <i className="bi bi-search"></i>
-          <input type="text" placeholder="Search tasks..." />
+          <input
+            type="text"
+            placeholder="Search tasks..."
+            onFocus={handleSearchFocus}
+            readOnly
+          />
         </div>
 
         <button className="notification-btn">
@@ -17,9 +41,16 @@ function Navbar() {
         </button>
 
         <div className="user-profile">
-          <div className="avatar">S</div>
-          <span>Student</span>
+          <div className="avatar">
+            {currentUser ? currentUser.name.charAt(0).toUpperCase() : "S"}
+          </div>
+
+          <span>{currentUser ? currentUser.name : "Student"}</span>
         </div>
+
+        <button className="logout-btn" onClick={handleLogout}>
+          Logout
+        </button>
       </div>
     </header>
   );

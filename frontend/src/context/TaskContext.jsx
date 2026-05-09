@@ -1,106 +1,141 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import API from "../services/api";
+import { useAuth } from "./AuthContext";
 
 const TaskContext = createContext();
 
 export function TaskProvider({ children }) {
-  const [tasks, setTasks] = useState(() => {
-    const savedTasks = localStorage.getItem("studysync_tasks");
+  const { currentUser } = useAuth();
 
-    if (savedTasks) {
-      return JSON.parse(savedTasks);
+  const [tasks, setTasks] = useState([]);
+  const [taskLoading, setTaskLoading] = useState(false);
+
+  const fetchTasks = async () => {
+    try {
+      if (!currentUser) {
+        setTasks([]);
+        return;
+      }
+
+      setTaskLoading(true);
+
+      const response = await API.get("/tasks");
+
+      setTasks(response.data.tasks);
+
+      setTaskLoading(false);
+    } catch (error) {
+      setTaskLoading(false);
+      console.log(error.response?.data?.message || "Failed to fetch tasks");
     }
-
-    return [
-      {
-        id: 1,
-        title: "Complete React Frontend",
-        subject: "Web Programming",
-        deadline: "2026-05-12",
-        status: "Pending",
-      },
-      {
-        id: 2,
-        title: "Data Structures Assignment",
-        subject: "Data Structures",
-        deadline: "2026-05-18",
-        status: "Pending",
-      },
-      {
-        id: 3,
-        title: "Project Proposal",
-        subject: "Web Programming",
-        deadline: "2026-05-01",
-        status: "Completed",
-      },
-    ];
-  });
+  };
 
   useEffect(() => {
-    localStorage.setItem("studysync_tasks", JSON.stringify(tasks));
-  }, [tasks]);
+    fetchTasks();
+  }, [currentUser]);
 
-  const addTask = (title, subject, deadline) => {
-    const newTask = {
-      id: Date.now(),
-      title: title,
-      subject: subject,
-      deadline: deadline,
-      status: "Pending",
-    };
+  const addTask = async (title, subject, deadline) => {
+    try {
+      const response = await API.post("/tasks", {
+        title,
+        subject,
+        deadline,
+      });
 
-    setTasks([...tasks, newTask]);
+      setTasks([response.data.task, ...tasks]);
+
+      return {
+        success: true,
+        message: response.data.message,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: error.response?.data?.message || "Task creation failed",
+      };
+    }
   };
 
-  const updateTask = (id, title, subject, deadline) => {
-    const updatedTasks = tasks.map((task) => {
-      if (task.id === id) {
-        return {
-          ...task,
-          title: title,
-          subject: subject,
-          deadline: deadline,
-        };
-      }
+  const updateTask = async (id, title, subject, deadline) => {
+    try {
+      const response = await API.put(`/tasks/${id}`, {
+        title,
+        subject,
+        deadline,
+      });
 
-      return task;
-    });
+      const updatedTasks = tasks.map((task) => {
+        if (task._id === id) {
+          return response.data.task;
+        }
 
-    setTasks(updatedTasks);
+        return task;
+      });
+
+      setTasks(updatedTasks);
+
+      return {
+        success: true,
+        message: response.data.message,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: error.response?.data?.message || "Task update failed",
+      };
+    }
   };
 
-  const markCompleted = (id) => {
-    const updatedTasks = tasks.map((task) => {
-      if (task.id === id) {
-        return {
-          ...task,
-          status: "Completed",
-        };
-      }
+  const markCompleted = async (id) => {
+    try {
+      const response = await API.put(`/tasks/${id}`, {
+        status: "Completed",
+      });
 
-      return task;
-    });
+      const updatedTasks = tasks.map((task) => {
+        if (task._id === id) {
+          return response.data.task;
+        }
 
-    setTasks(updatedTasks);
+        return task;
+      });
+
+      setTasks(updatedTasks);
+    } catch (error) {
+      alert(error.response?.data?.message || "Failed to complete task");
+    }
   };
 
-  const markPending = (id) => {
-    const updatedTasks = tasks.map((task) => {
-      if (task.id === id) {
-        return {
-          ...task,
-          status: "Pending",
-        };
-      }
+  const markPending = async (id) => {
+    try {
+      const response = await API.put(`/tasks/${id}`, {
+        status: "Pending",
+      });
 
-      return task;
-    });
+      const updatedTasks = tasks.map((task) => {
+        if (task._id === id) {
+          return response.data.task;
+        }
 
-    setTasks(updatedTasks);
+        return task;
+      });
+
+      setTasks(updatedTasks);
+    } catch (error) {
+      alert(error.response?.data?.message || "Failed to update task");
+    }
   };
 
-  const deleteTask = (id) => {
-    const remainingTasks = tasks.filter((task) => task.id !== id);
-    setTasks(remainingTasks);
+  const deleteTask = async (id) => {
+    try {
+      await API.delete(`/tasks/${id}`);
+
+      const remainingTasks = tasks.filter((task) => task._id !== id);
+
+      setTasks(remainingTasks);
+    } catch (error) {
+      alert(error.response?.data?.message || "Task delete failed");
+    }
   };
 
   const totalTasks = tasks.length;
@@ -121,6 +156,9 @@ export function TaskProvider({ children }) {
     const today = new Date();
     const deadlineDate = new Date(task.deadline);
 
+    today.setHours(0, 0, 0, 0);
+    deadlineDate.setHours(0, 0, 0, 0);
+
     const difference = deadlineDate - today;
     const daysLeft = difference / (1000 * 60 * 60 * 24);
 
@@ -131,6 +169,8 @@ export function TaskProvider({ children }) {
     <TaskContext.Provider
       value={{
         tasks,
+        taskLoading,
+        fetchTasks,
         addTask,
         updateTask,
         markCompleted,

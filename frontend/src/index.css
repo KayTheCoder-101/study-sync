@@ -658,3 +658,478 @@ a {
     width: 100%;
   }
 }
+/* Step 6 Auth Improvements */
+
+.auth-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #6c35d8;
+  font-size: 24px;
+  font-weight: 800;
+  margin-bottom: 20px;
+}
+
+.auth-logo i {
+  font-size: 30px;
+}
+
+.logout-btn {
+  border: none;
+  background: #e74c3c;
+  color: #ffffff;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-weight: 700;
+}
+
+.logout-btn:hover {
+  background: #c0392b;
+}
+/* Step 7 Deadline Alert Labels */
+
+.deadline-alert {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 6px 11px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.alert-overdue {
+  background: #ffe2df;
+  color: #e74c3c;
+}
+
+.alert-today {
+  background: #fff0d9;
+  color: #f39c12;
+}
+
+.alert-tomorrow {
+  background: #e6f0ff;
+  color: #2f80ed;
+}
+
+.alert-soon {
+  background: #f3edff;
+  color: #6c35d8;
+}
+
+.alert-upcoming {
+  background: #edf8ff;
+  color: #0984e3;
+}
+
+.alert-completed {
+  background: #dff8ef;
+  color: #00a878;
+}
+/* Step 8 Profile Page */
+
+.profile-grid {
+  display: grid;
+  grid-template-columns: 330px 1fr;
+  gap: 22px;
+  margin-bottom: 22px;
+}
+
+.profile-card {
+  text-align: center;
+}
+
+.profile-avatar-large {
+  width: 110px;
+  height: 110px;
+  background: linear-gradient(135deg, #7b3ff2, #5b24c9);
+  color: #ffffff;
+  border-radius: 50%;
+  margin: 0 auto 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 42px;
+  font-weight: 800;
+}
+
+.profile-card h3 {
+  font-weight: 800;
+  margin-bottom: 6px;
+}
+
+.profile-card p {
+  color: #777;
+  margin-bottom: 14px;
+}
+
+.student-badge {
+  background: #f3edff;
+  color: #6c35d8;
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-weight: 800;
+  font-size: 13px;
+}
+
+.detail-row {
+  border-bottom: 1px solid #eee;
+  padding: 15px 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-row span {
+  color: #777;
+}
+
+.detail-row strong {
+  color: #1f1f29;
+  text-align: right;
+}
+
+.profile-stats-card {
+  margin-top: 5px;
+}
+
+.profile-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+}
+
+.profile-stat-box {
+  background: #f8f6ff;
+  border-radius: 16px;
+  padding: 20px;
+  text-align: center;
+}
+
+.profile-stat-box i {
+  font-size: 26px;
+}
+
+.profile-stat-box h3 {
+  font-size: 30px;
+  font-weight: 800;
+  margin: 10px 0 4px;
+}
+
+.profile-stat-box p {
+  margin: 0;
+  color: #777;
+}
+
+/* Step 8 Settings Page */
+
+.settings-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+  margin-bottom: 22px;
+}
+
+.setting-row {
+  border-bottom: 1px solid #eee;
+  padding: 18px 0;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: center;
+}
+
+.setting-row:last-child {
+  border-bottom: none;
+}
+
+.setting-row h6 {
+  font-weight: 800;
+  margin-bottom: 5px;
+}
+
+.setting-row p {
+  color: #777;
+  margin: 0;
+  font-size: 14px;
+}
+
+.preference-box {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.preference-box label {
+  font-weight: 800;
+}
+
+.preference-box select {
+  border: 1px solid #e5ddff;
+  border-radius: 12px;
+  padding: 12px;
+  outline: none;
+}
+
+.project-info-card p {
+  color: #555;
+  margin-bottom: 10px;
+}
+
+/* Toggle Switch */
+
+.switch {
+  position: relative;
+  display: inline-block;
+  min-width: 52px;
+  height: 28px;
+}
+
+.switch input {
+  display: none;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  background: #ddd;
+  border-radius: 30px;
+  inset: 0;
+  transition: 0.3s;
+}
+
+.slider::before {
+  content: "";
+  position: absolute;
+  height: 22px;
+  width: 22px;
+  left: 3px;
+  bottom: 3px;
+  background: #ffffff;
+  border-radius: 50%;
+  transition: 0.3s;
+}
+
+.switch input:checked + .slider {
+  background: #6c35d8;
+}
+
+.switch input:checked + .slider::before {
+  transform: translateX(24px);
+}
+
+/* Step 8 Responsive */
+
+@media (max-width: 900px) {
+  .profile-grid,
+  .settings-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .detail-row {
+    flex-direction: column;
+  }
+
+  .detail-row strong {
+    text-align: left;
+  }
+}
+
+@media (max-width: 600px) {
+  .profile-stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .setting-row {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+/* Step 14 Loading Button */
+
+.auth-card button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+/* Step 16 History Page */
+
+.history-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-bottom: 22px;
+}
+
+.history-summary-card {
+  background: #ffffff;
+  border: 1px solid #e5ddff;
+  border-radius: 18px;
+  padding: 22px;
+  box-shadow: 0 8px 25px rgba(103, 58, 183, 0.08);
+}
+
+.history-summary-card i {
+  font-size: 26px;
+}
+
+.history-summary-card h3 {
+  font-size: 32px;
+  font-weight: 800;
+  margin: 12px 0 4px;
+}
+
+.history-summary-card p {
+  margin: 0;
+  color: #777;
+}
+
+.history-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 0.8fr;
+  gap: 22px;
+}
+
+.history-item {
+  border: 1px solid #eee;
+  border-radius: 16px;
+  padding: 16px;
+  margin-bottom: 14px;
+  display: grid;
+  grid-template-columns: 46px 1fr auto;
+  gap: 14px;
+  align-items: flex-start;
+  background: #ffffff;
+}
+
+.history-icon {
+  width: 42px;
+  height: 42px;
+  background: #f3edff;
+  color: #6c35d8;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.history-content h6 {
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.history-content p {
+  margin: 4px 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.small-history-card {
+  border: 1px solid #eee;
+  border-radius: 14px;
+  padding: 15px;
+  margin-bottom: 12px;
+  background: #f8f6ff;
+}
+
+.small-history-card h6 {
+  font-weight: 800;
+  margin-bottom: 5px;
+}
+
+.small-history-card p {
+  margin: 0 0 8px;
+  color: #777;
+}
+
+.small-history-card span {
+  display: inline-block;
+  background: #dff8ef;
+  color: #00a878;
+  padding: 5px 11px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+@media (max-width: 900px) {
+  .history-summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .history-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .history-item {
+    grid-template-columns: 1fr;
+  }
+}
+/* Step 17 Not Found Page */
+
+.not-found-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #7b3ff2, #5b24c9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 25px;
+}
+
+.not-found-card {
+  background: #ffffff;
+  max-width: 460px;
+  width: 100%;
+  border-radius: 24px;
+  padding: 40px;
+  text-align: center;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.18);
+}
+
+.not-found-icon {
+  width: 80px;
+  height: 80px;
+  background: #f3edff;
+  color: #6c35d8;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 18px;
+  font-size: 34px;
+}
+
+.not-found-card h1 {
+  font-size: 70px;
+  font-weight: 900;
+  color: #6c35d8;
+  margin-bottom: 0;
+}
+
+.not-found-card h2 {
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+
+.not-found-card p {
+  color: #777;
+  margin-bottom: 24px;
+}
+
+.not-found-btn {
+  display: inline-flex;
+  width: auto;
+}
+
+.search-box input {
+  cursor: pointer;
+}
