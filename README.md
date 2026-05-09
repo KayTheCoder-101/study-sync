@@ -16,13 +16,6 @@ The system is designed especially for students who want to improve productivity,
 
 ---
 
-## Group Members
-
-- **Hifza Tahir** — Roll No: **23F-0804**
-- **Ayesha Hafeez** — Roll No: **23F-0840**
-
----
-
 ## Problem Statement
 
 Students often face difficulty in managing their academic responsibilities because they have to handle multiple subjects, assignments, projects, and submission deadlines. Many students rely on memory, notebooks, or scattered reminders, which can result in missed deadlines, incomplete tasks, and poor time management.
